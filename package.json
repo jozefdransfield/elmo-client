@@ -1,0 +1,11 @@
+{
+  "name": "elmo-client",
+  "version": "0.0.1",
+  "private": true,
+  "main": "elmo.js",
+  "dependencies": {
+    "bluebird": "~1.0.0",
+    "request": "~2.33.0",
+    "optimist": "~0.6.0"
+  }
+}
