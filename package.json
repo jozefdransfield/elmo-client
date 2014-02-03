@@ -1,7 +1,10 @@
 {
   "name": "elmo-client",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.0.2",
+  "author": {
+    "name": "Jozef Dransfield",
+    "email": "Jozef.Dransfield@me.com"
+  },
   "main": "elmo.js",
   "dependencies": {
     "bluebird": "~1.0.0",

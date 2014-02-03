@@ -1,30 +1,33 @@
 var Promise = require("bluebird")
 var request = Promise.promisifyAll(require('request'));
 
-function Message(category, context, body) {
+function Message() {
 	this.category = category;
 	this.context = context;
 	this.body = body;
 }
 
-module.exports = {
-	init: function(id) {
-		this.id = id;
+function MessageBuilder(id, source, str) {
+	var message = new Message();
+	message.id = id;
+	message.source = id;
+	message.body = str;
+
+	this.info = function() {
+		message.category = "INFO";
 		return this;
-	},
-	info: function(body) {
-		return this.message("INFO", body);
-	},
-	warn: function(body) {
-		return this.message("WARN", body);
-	},
-	error: function(body) {
-		return this.message("ERROR", body);
-	},
-	message: function(category, body) {
-		var message = new Message(category, null, body);
-		
-		return request.postAsync('http://elmo-io.herokuapp.com/api/'+this.id+'/message', {form: message}).
+	}
+	this.warn = function() {
+		message.category = "WARN";
+		return this;		
+	}
+	this.error = function() {
+		message.category = "ERROR";
+		return this;
+	}	
+	
+	this.log = function() {
+		return request.postAsync('http://elmo-io.herokuapp.com/api/'+this.message.id+'/message', {form: message}).
 		spread(function(request, body) {
 			console.log(body);
 		}).
@@ -34,6 +37,18 @@ module.exports = {
 
 	}
 }
+
+module.exports.Elmo = function Elmo(id, source) {
+	this.id = id;
+	this.source = source;
+	
+	this.message = function(str) {
+		
+		return new MessageBuilder(this.id, this.source, str)
+	}
+}
+
+
 
 
 
