@@ -2,15 +2,13 @@ var Promise = require("bluebird")
 var request = Promise.promisifyAll(require('request'));
 
 function Message() {
-	this.category = category;
-	this.context = context;
-	this.body = body;
+
 }
 
 function MessageBuilder(id, source, str) {
 	var message = new Message();
 	message.id = id;
-	message.source = id;
+	message.source = source;
 	message.body = str;
 
 	this.info = function() {
@@ -27,7 +25,7 @@ function MessageBuilder(id, source, str) {
 	}	
 	
 	this.log = function() {
-		return request.postAsync('http://elmo-io.herokuapp.com/api/'+this.message.id+'/message', {form: message}).
+		return request.postAsync('http://elmo-io.herokuapp.com/api/'+message.id+'/message', {form: message}).
 		spread(function(request, body) {
 			console.log(body);
 		}).
