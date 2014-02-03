@@ -39,13 +39,12 @@ function MessageBuilder(id, source, str) {
 }
 
 module.exports.Elmo = function Elmo(id, source) {
-	this.id = id;
-	this.source = source;
-	
-	this.message = function(str) {
-		
-		return new MessageBuilder(this.id, this.source, str)
-	}
+	return {
+		id : id,
+		source : source,
+		message: function(str) {
+			return new MessageBuilder(this.id, this.source, str);		
+		}
 }
 
 
