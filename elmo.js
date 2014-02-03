@@ -45,6 +45,7 @@ module.exports.Elmo = function Elmo(id, source) {
 		message: function(str) {
 			return new MessageBuilder(this.id, this.source, str);		
 		}
+	}
 }
 
 
