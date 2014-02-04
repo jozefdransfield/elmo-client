@@ -133,7 +133,7 @@ function addFileAndLineInformation(message) {
 		throw new Error();
 	} catch (e) {
 		var lines = e.stack.split("\n");
-		var arr = /\((.*):(.*):(.*)\)/.exec(lines[3]);
+		var arr = /(\/.*):(.*):.*/.exec(lines[3]);
 		message.param("fileName", arr[1]);
 		message.param("lineNumber", arr[2]);
 	}
@@ -144,7 +144,9 @@ function addFileAndLineInformation(message) {
 module.exports.Elmo.prototype.routes = [routes.console/*, routes.remote*/];
 
 
-
+module.exports.Elmo.prototype.helpers = {
+	expressLogger : require("./logger.js")
+};
 
 
 
