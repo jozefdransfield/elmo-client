@@ -1,50 +1,69 @@
 var Promise = require("bluebird")
 var request = Promise.promisifyAll(require('request'));
+var _ = require("underscore")._;
 
-function Message() {
-
-}
-
-function MessageBuilder(id, source, str) {
-	var message = new Message();
-	message.id = id;
-	message.source = source;
-	message.body = str;
+function Message(str) {
+	this.body = str;
+	this.time = new Date();
 
 	this.info = function() {
-		message.category = "INFO";
+		this.category = "INFO";
 		return this;
 	}
 	this.warn = function() {
-		message.category = "WARN";
+		this.category = "WARN";
 		return this;		
 	}
 	this.error = function() {
-		message.category = "ERROR";
+		this.category = "ERROR";
 		return this;
 	}	
-	
-	this.log = function() {
-		return request.postAsync('http://elmo-io.herokuapp.com/api/'+message.id+'/message', {form: message}).
-		spread(function(request, body) {
-			console.log(body);
-		}).
-		catch(function(err) {
-			console.error(err);
-		});
-
+	this.toString = function() {
+		return this.category + " :: " + this.time + " :: " + this.body;
 	}
 }
 
-module.exports.Elmo = function Elmo(id, source) {
-	return {
-		id : id,
-		source : source,
-		message: function(str) {
-			return new MessageBuilder(this.id, this.source, str);		
-		}
+function asPromise(message) {
+	return function(route) {
+		return route(message);
 	}
 }
+
+function Elmo(id, source) {
+	this.log = function(message) {
+		message.id = id;
+		message.source = source;
+		
+		return Promise.all(_(this.routes).map(asPromise(message)));
+	}
+} 
+var routes = {};
+
+routes.console = Promise.method(function(message) {
+	// Look at the type category of the message
+	console.log(message.toString());
+});
+
+routes.remote = function(message) {
+	return request.postAsync('http://elmo-io.herokuapp.com/api/'+message.id+'/message', {form: message});
+}
+
+module.exports.elmo = function (id, source) {
+	return new Elmo(id, source);
+}
+
+module.exports.Elmo = Elmo;
+
+module.exports.Elmo.prototype.msg = function(str) {
+	return new Message(str);
+}
+
+module.exports.Elmo.prototype.routes = [routes.console, routes.remote];
+
+
+
+
+
 
 
 

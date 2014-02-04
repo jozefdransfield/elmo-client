@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
-var elmo = require("./elmo");
+var elmo = require("./elmo").elmo("1234", "elmo-cli");
 
-elmo.init("1234")
+var argv = require('optimist').usage("elmo-cli.js <message>").argv;
 
-var argv = require('optimist').usage("elmo-cli.js -category <CATEGORY> Message").default("category", "INFO").argv;
-
-elmo.message(argv.category, argv._[0]);
+elmo.log(elmo.msg(argv._[0]).info());

@@ -7,8 +7,9 @@
   },
   "main": "elmo.js",
   "dependencies": {
-    "bluebird": "~1.0.0",
+    "bluebird": "~1.0.1",
     "request": "~2.33.0",
-    "optimist": "~0.6.0"
+    "optimist": "~0.6.0",
+    "underscore": "~1.5.2"
   }
 }
